@@ -13,6 +13,7 @@ charger-connect: "\\Path\\to\\wav\\file.wav"
 charger-disconnect: ""
 ```
 
+### Run on startup
 Directly opening the file will open a terminal window, you can create a ``.vbs`` file to run program in background
 ```vbs
 Dim WinScriptHost
