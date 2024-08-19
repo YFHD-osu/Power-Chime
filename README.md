@@ -2,7 +2,7 @@
 Change windows default "beep" charging sound to your liking.<br>
 
 ## Installation
-Download latest version in [release](https://github.com/YFHD-osu/Charge-Sound/releases) page, and put executeable into your desired path <br>
+Download latest version in [release](https://github.com/YFHD-osu/Charge-Sound-Changer/releases) page, and put executeable into your desired path <br>
 
 Open the file to generate ``config.yaml`` and set it up <br>
 > [!TIP]
