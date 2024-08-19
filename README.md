@@ -1,5 +1,6 @@
 # Charge Sound Changer
 Change windows default "beep" charging sound to your liking.<br>
+<video controls width="350" src="https://github.com/user-attachments/assets/b7d3d790-ffc2-4a3f-b6a5-9f783a441609"></video>
 
 ## Installation
 Download latest version in [release](https://github.com/YFHD-osu/Charge-Sound-Changer/releases) page, and put executeable into your desired path <br>
