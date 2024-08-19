@@ -22,3 +22,7 @@ Set WinScriptHost = Nothing
 ```
 
 Put your ``.vbs`` shortcut into your ``shell:startup`` folder to run program when windows startup automatically
+
+### Disable original charge sound
+Most of the laptop uses system service to play charge sound, you can check for program in volume mixer, then mute them. <br>
+For an example, my laptop uses ``Realtek HD Audio Universal Service``
