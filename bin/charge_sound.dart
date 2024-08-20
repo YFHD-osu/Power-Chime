@@ -5,17 +5,37 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 import 'package:logger/logger.dart';
 
-const String defaults = """
-sound-file:
-  charger-connect: ""
-  charger-disconnect: ""
+const String defaults = r"""
+# You can disable function by commenting lines
+# If config file is broken, please delete file and restart program to generate a new one
+
+# run-script:
+#   charger-connect: 
+#     - start program:
+#       - ipconfig
+#       - param1
+#   charger-disconnect:
+#     - pwsh task:
+#       - start
+#       - path/to/program.exe
+
+# Play sound on charger connect or disconnect
+# Please fill in an absolute path of .wav file 
+play-sound:
+  # charger-connect: 
+  charger-disconnect: "path\\to\\your\\file.wav"
 """;
 
 final player = SoundPlayer();
 final listener = PowerListener();
 
 var logger = Logger(
-  printer: PrettyPrinter(),
+  printer: PrefixPrinter(
+    PrettyPrinter(
+      methodCount: 0,
+      noBoxingByDefault: true
+    )
+  )
 );
 
 void main() {
@@ -25,6 +45,31 @@ void main() {
   
   listener.listen();
   listener.dispose();
+}
+
+class Task {
+  final String title;
+  final List<String> command;
+
+  Task({
+    required this.title,
+    required this.command
+  });
+
+  factory Task.fromMap(YamlMap res) {
+    return Task(
+      title: res.keys.first,
+      command: List.from(res.values.first)
+    );
+  }
+
+  String run() {
+    try {
+      return Process.runSync(command.first, command.sublist(1)).stdout as String;
+    } catch(e) {
+      return "Error: $e";
+    }
+  }
 }
 
 class SoundPlayer {
@@ -42,18 +87,23 @@ class SoundPlayer {
     }
     var doc = loadYaml(file.readAsStringSync()) as Map;
 
-    final conn = doc["charger-connect"].toString();
-    connect = (conn.isNotEmpty && File(conn).existsSync()) ?
-      File(doc["charger-connect"].toString()) : null;
+    if(doc.containsKey("play-sound")) {
+      final root = doc["play-sound"];
+      final conn = root["charger-connect"].toString();
+      connect = (conn.isNotEmpty && File(conn).existsSync()) ?
+        File(root["charger-connect"].toString()) : null;
 
-    final disc = doc["charger-disconnect"].toString();
-    disconnect = disc.isNotEmpty && File(disc).existsSync() ?
-      File(doc["charger-disconnect"].toString()) : null;
+      final disc = root["charger-disconnect"].toString();
+      disconnect = disc.isNotEmpty && File(disc).existsSync() ?
+        File(root["charger-disconnect"].toString()) : null;
 
-    logger.d("Set conn sound: ${connect?.path}");
-    logger.d("Set disc cound: ${disconnect?.path}");
+      logger.i("Load sound connect sound file: ${connect?.path??'None'}");
+      logger.i("Load sound disconnect sound file: ${disconnect?.path??'None'}");
+    } else {
+      logger.i("Play sound function is disabled in config file");
+    }
 
-    logger.d("Initial power state: ${PowerListener.prevState}");
+    logger.i("Current charaging state: ${PowerListener.prevState ? 'Charged' : 'Battery'}");
   }
 
   int play(bool isCharged) {
@@ -78,6 +128,7 @@ class PowerListener {
     ..ref.lpszClassName = className;
 
   static bool prevState = fetchState();
+  static List<Task> connTasks = [], discTask = [];
 
   static int windowProc(int hWnd, int msg, int wParam, int lParam) {
     switch (msg) {
@@ -89,13 +140,21 @@ class PowerListener {
           final plugged = sps.ref.ACLineStatus == 1;
           
           if (plugged && prevState == false) {
-            logger.d("Power plugged-in ($prevState)");
+            logger.i("Power plugged-in ($prevState)");
             player.play(true);
+            for (var task in connTasks) {
+              final result = task.run();
+              logger.i("Task ${task.title} run and end up with log:\n $result");
+            }
             prevState = true;
             
           } else if (!plugged && prevState == true) {
-            logger.d("Power un-plugged ($prevState)");
+            logger.i("Power un-plugged ($prevState)");
             player.play(false);
+            for (var task in discTask) {
+              final result = task.run();
+              logger.i("Task ${task.title} run and end up with log:\n $result");
+            }
             prevState = false;
           }
           
@@ -143,6 +202,36 @@ class PowerListener {
     );
 
     ShowWindow(GetConsoleWindow(), SHOW_WINDOW_CMD.SW_HIDE);
+    
+    File file = File("config.yaml");
+    if (!file.existsSync()) {
+      file.writeAsStringSync(defaults);
+    }
+    var doc = loadYaml(file.readAsStringSync()) as Map;
+
+    if(doc.containsKey("run-script")) {
+      final root = doc["run-script"];
+
+      if (root["charger-disconnect"] != null) {
+        discTask = (root["charger-disconnect"] as YamlList)
+          .map((e) => Task.fromMap(e as YamlMap))
+          .toList();
+      } else {
+        discTask = [];
+      }
+
+      if (root["charger-connect"] != null) {
+        connTasks = (root["charger-connect"] as YamlList)
+          .map((e) => Task.fromMap(e as YamlMap))
+          .toList();
+      } else {
+        connTasks = [];
+      }
+      
+      logger.i("Loaded ${connTasks.length} tasks on connect and ${discTask.length} tasks on disconnect");
+    } else {
+      logger.i("Run script function is disabled in config file");
+    }
   }
 
   void dispose() {
