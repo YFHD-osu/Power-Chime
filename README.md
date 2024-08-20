@@ -10,8 +10,8 @@ Open the file to generate ``config.yaml`` and set it up <br>
 > Only ``.wav`` sound files are supported.
 ```yaml
 charger-connect: "\\Path\\to\\wav\\file.wav"
-# Make field empty to disable playing sound
-charger-disconnect: ""
+# Comment field to disable function
+# charger-disconnect: ""
 ```
 
 ### Run on startup
