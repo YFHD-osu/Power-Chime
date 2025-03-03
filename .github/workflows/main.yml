@@ -45,7 +45,7 @@ jobs:
           echo "::set-output name=version::$version"
       
       - name: Build App
-        run: dart compile exe bin/main.dart -o charge-sound.exe
+        run: dart compile exe bin/main.dart -o charge-sound-${{ steps.parse_version.outputs.version }}exe
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -53,6 +53,6 @@ jobs:
           draft: true
           tag_name: "v${{ steps.parse_version.outputs.version }}"
           name: "v${{ steps.parse_version.outputs.version }}"
-          files: "charge-sound.exe"
+          files: "charge-sound-${{ steps.parse_version.outputs.version }}.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
