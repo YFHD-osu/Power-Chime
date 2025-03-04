@@ -1,8 +1,8 @@
 import 'dart:io';
-
-import 'package:charge_sound/logger.dart';
-import 'package:charge_sound/task.dart';
 import 'package:yaml/yaml.dart';
+
+import 'package:power_chime/logger.dart';
+import 'package:power_chime/task.dart';
 
 const defaultYaml = """
 # Comment field to disable function

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:yaml/yaml.dart';
 
-import 'package:charge_sound/logger.dart';
+import 'package:power_chime/logger.dart';
 
 enum State {
   plugged,
@@ -30,7 +30,16 @@ class Task {
   }
 
   Future<void> execute() async {
-    final process = await Process.run(program, args);
-    logger.i(process.stdout);
+    late ProcessResult result;
+    try {
+      result = await Process.run(program, args);
+    } catch (error) {
+      logger.e("Process $name failed. $error");
+      return;
+    }
+
+    logger.i("Process $name end with code ${result.exitCode}");
+    logger.d("[STDOUT] ${result.stdout}");
+    logger.d("[STDERR] ${result.stderr}");
   }
 }

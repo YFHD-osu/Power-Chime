@@ -1,9 +1,9 @@
-import 'package:charge_sound/database.dart';
-
-import 'package:charge_sound/power_listener.dart';
-import 'package:charge_sound/sound_player.dart';
-import 'package:charge_sound/task.dart';
 import 'package:logger/logger.dart';
+
+import 'package:power_chime/database.dart';
+import 'package:power_chime/power_listener.dart';
+import 'package:power_chime/sound_player.dart';
+import 'package:power_chime/task.dart';
 
 final Logger logger = Logger();
 
@@ -36,8 +36,6 @@ void onStateChange() async {
     for (var item in tasks) {
       await item.execute();
     }
-
-    
 
     prevState = true;    
   } else if (!PowerListener.plugged && prevState == true) {

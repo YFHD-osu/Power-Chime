@@ -53,6 +53,6 @@ jobs:
           draft: true
           tag_name: "v${{ steps.parse_version.outputs.version }}"
           name: "v${{ steps.parse_version.outputs.version }}"
-          files: "charge-sound-${{ steps.parse_version.outputs.version }}.exe"
+          files: "power-chime-${{ steps.parse_version.outputs.version }}.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

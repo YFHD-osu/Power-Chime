@@ -19,7 +19,7 @@ Directly opening the file will open a terminal window, you can create a ``.vbs``
 ```vbs
 Dim WinScriptHost
 Set WinScriptHost = CreateObject("WScript.Shell")
-WinScriptHost.Run Chr(34) & "charge_sound.exe" & Chr(34), 0
+WinScriptHost.Run Chr(34) & "power_chime.exe" & Chr(34), 0
 Set WinScriptHost = Nothing
 ```
 
