@@ -1,4 +1,4 @@
-# Charge Sound Changer
+# Power Chime
 Change windows default "beep" charging sound to your liking.<br>
 <video controls width="350" src="https://github.com/user-attachments/assets/b7d3d790-ffc2-4a3f-b6a5-9f783a441609"></video>
 
