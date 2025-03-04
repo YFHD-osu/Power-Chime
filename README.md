@@ -1,6 +1,8 @@
 # Power Chime
-Change windows default "beep" charging sound to your liking.<br>
-<video controls width="350" src="https://github.com/user-attachments/assets/b7d3d790-ffc2-4a3f-b6a5-9f783a441609"></video>
+<img src="https://github.com/YFHD-osu/Power-Chime/blob/main/assets/app-icon.png?raw=true" width="250" height="250"/>
+
+## Change windows default "beep" charging sound to your liking.
+<video controls width="350" src="https://github.com/user-attachments/assets/b7d3d790-ffc2-4a3f-b6a5-9f783a441609" title="asdas"></video>
 
 ## Installation
 Download latest version in [release](https://github.com/YFHD-osu/Charge-Sound-Changer/releases) page, and put executeable into your desired path <br>
