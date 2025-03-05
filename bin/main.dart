@@ -17,12 +17,14 @@ void main() async {
 
   prevState = PowerListener.plugged;
 
+  // await Preferences.tasks.first.execute();
+
   logger.d("Application initialize completed.");
 
   PowerListener.loop();
 }
 
-void onStateChange() async {
+void onStateChange()  {
   logger.i("Plugged: ${PowerListener.plugged} (${PowerListener.percentage}%)");
 
   if (PowerListener.plugged && prevState == false) {
@@ -33,8 +35,10 @@ void onStateChange() async {
     final tasks = Preferences.tasks
       .where((e) => e.event == State.plugged);
 
+    logger.i("Running ${tasks.length} tasks on plugged");
+
     for (var item in tasks) {
-      await item.execute();
+      item.execute();
     }
 
     prevState = true;    
@@ -44,12 +48,12 @@ void onStateChange() async {
     }
 
     final tasks = Preferences.tasks
-      .where((e) => e.event == State.unplugged);
+      .where((e) => e.event == State.unplugged)
+      .map((e) => e.execute())
+      .toList(); // 將迭代器轉換成 List
 
-    for (var item in tasks) {
-      await item.execute();
-    }
+    logger.i("Running ${tasks.length} tasks on unplugged");
 
-    prevState = false;    
+    prevState = false;
   }
 }

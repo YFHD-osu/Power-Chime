@@ -29,15 +29,17 @@ class Task {
     );
   }
 
-  Future<void> execute() async {
+  void execute()  {
     late ProcessResult result;
+
     try {
-      result = await Process.run(program, args);
+      result = Process.runSync(program, args, runInShell: true);
     } catch (error) {
       logger.e("Process $name failed. $error");
       return;
     }
 
+    print("4");
     logger.i("Process $name end with code ${result.exitCode}");
     logger.d("[STDOUT] ${result.stdout}");
     logger.d("[STDERR] ${result.stderr}");

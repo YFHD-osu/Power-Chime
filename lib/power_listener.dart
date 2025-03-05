@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:power_chime/logger.dart';
 import 'package:win32/win32.dart';
 
 class PowerListener {
@@ -30,7 +31,7 @@ class PowerListener {
           final sps = calloc<SYSTEM_POWER_STATUS>();
           GetSystemPowerStatus(sps);
           status = sps.ref;
-          onChanged();
+          onChanged.call();
           free(sps);
         }
         break;
@@ -49,7 +50,6 @@ class PowerListener {
     // Call the GetSystemPowerStatus function to retrieve the power status
     GetSystemPowerStatus(powerStatus);
     
-
     // Clean up
     free(powerStatus);
     CoUninitialize();
